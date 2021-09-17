@@ -115,6 +115,7 @@
     <ClInclude Include="LASER.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LASER.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
