@@ -94,6 +94,15 @@ void idle()
 		delete[] buffer;
 	}
 
+	SMObject PMObj(TEXT("Process Management"), sizeof(ProcessManagement));
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+	if (PMData->Shutdown.Status) {
+		exit(0);
+	}
+
 	display();
 }
 

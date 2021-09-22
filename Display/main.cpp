@@ -26,6 +26,13 @@
 	#include <sys/time.h>
 #endif
 
+#include <conio.h>
+#include <SMStructs.h>
+#include <SMObject.h>
+
+using namespace System;
+using namespace System::Diagnostics;
+using namespace System::Threading;
 
 #include "Camera.hpp"
 #include "Ground.hpp"
@@ -235,6 +242,15 @@ void idle() {
 
 	display();
 
+	SMObject PMObj(TEXT("Process Management"), sizeof(ProcessManagement));
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+	if (PMData->Shutdown.Status) {
+		exit(0);
+	}
+
 #ifdef _WIN32 
 	Sleep(sleep_time_between_frames_in_seconds * 1000);
 #else
@@ -301,5 +317,4 @@ void motion(int x, int y) {
 	prev_mouse_x = x;
 	prev_mouse_y = y;
 };
-
 
