@@ -242,20 +242,28 @@ void idle() {
 
 	display();
 
-	SMObject PMObj(TEXT("Process Management"), sizeof(ProcessManagement));
-	PMObj.SMCreate();
-	PMObj.SMAccess();
-
-	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
-	if (PMData->Shutdown.Status) {
-		exit(0);
-	}
-
 #ifdef _WIN32 
 	Sleep(sleep_time_between_frames_in_seconds * 1000);
 #else
 	usleep(sleep_time_between_frames_in_seconds * 1e6);
 #endif
+	double TimeStamp;
+	__int64 Frequency, Counter;
+	int Shutdown = 0x00;
+
+	// SM Creation and seeking access
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	PMObj.SMAccess();
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
+	QueryPerformanceCounter((LARGE_INTEGER*)&Counter);
+	TimeStamp = (double)Counter / (double)Frequency * 1000; //ms
+	Console::WriteLine("Display time stamp   : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
+	if (PMData->Shutdown.Status) 
+	{
+		exit(-1);
+	}
 };
 
 void keydown(unsigned char key, int x, int y) {

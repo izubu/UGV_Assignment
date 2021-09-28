@@ -10,19 +10,17 @@ using namespace System::Threading;
 
 int main()
 {
-    SMObject PMObj(TEXT("Process Management"), sizeof(ProcessManagement));
+    SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
-    //SM Creation and seeking access
-    PMObj.SMCreate();
+    //SM seeking access
     PMObj.SMAccess();
-
-    ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
     // Declaration
     double TimeStamp;
     __int64 Frequency, Counter;
     int Shutdown = 0x00;
 
+    ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
     QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
     while (1)
     {
@@ -30,10 +28,10 @@ int main()
         TimeStamp = (double)Counter / (double)Frequency * 1000; //ms
         Console::WriteLine("Laser time stamp   : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
         Thread::Sleep(25);
-        if (PMData->Shutdown.Status)
-            break;
-        if (_kbhit())
-            break;
+        if (PMData->Shutdown.Status) 
+        {
+            exit(0);
+        }
     }
 
     return 0;

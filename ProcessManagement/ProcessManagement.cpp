@@ -35,18 +35,13 @@ TCHAR Units[10][20] = //
 int main()
 {
 	//start all 5 modules
-	SMObject PMObj(TEXT("Process Management"), sizeof(ProcessManagement));
-	
-	array<String^>^ ModuleList = gcnew array<String^>{"LASER", "Display", "VehicleControl", "GPS", "Camera"};
-	array<int>^ Critical = gcnew array<int>(ModuleList->Length) { 1, 1, 1, 0, 0 };
-	array<Process^>^ ProcessList = gcnew array<Process^>(ModuleList->Length);
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
 	//SM Creation and seeking access
 	PMObj.SMCreate();
 	PMObj.SMAccess();
 
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
-
 	StartProcesses();
 
 	while (!_kbhit())
