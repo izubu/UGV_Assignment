@@ -1,7 +1,6 @@
 
 #include "GPS.h"
 
-
 int GPS::connect(String^ hostName, int portNumber) 
 {
 	// YOUR CODE HERE

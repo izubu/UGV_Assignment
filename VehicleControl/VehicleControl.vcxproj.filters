@@ -15,10 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="VehicleControlmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VehicleControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SMObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

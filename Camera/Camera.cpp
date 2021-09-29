@@ -11,6 +11,10 @@
 
 #include <turbojpeg.h>
 
+using namespace System;
+using namespace System::Diagnostics;
+using namespace System::Threading;
+
 void display();
 void idle();
 
@@ -94,6 +98,23 @@ void idle()
 		delete[] buffer;
 	}
 
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+	
+	double TimeStamp;
+	__int64 Frequency, Counter;
+	int Shutdown = 0x00;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
+	QueryPerformanceCounter((LARGE_INTEGER*)&Counter);
+	TimeStamp = (double)Counter / (double)Frequency * 1000; //ms
+	Console::WriteLine("Camera time stamp   : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
+	Thread::Sleep(25);
+	if (PMData->Shutdown.Status) {
+		exit(0);
+	}
 	display();
 }
 

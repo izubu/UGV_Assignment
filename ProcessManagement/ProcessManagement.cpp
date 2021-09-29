@@ -7,13 +7,15 @@
 #include <iostream>
 #include <conio.h>
 
-#include "SMStructs.h"
-#include "SMObject.h"
+#include <SMStructs.h>
+#include <SMObject.h>
 
 using namespace System;
 using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Text;
+using namespace System::Diagnostics;
+using namespace System::Threading;
 
 #define NUM_UNITS 5
 
@@ -33,7 +35,22 @@ TCHAR Units[10][20] = //
 int main()
 {
 	//start all 5 modules
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+
+	//SM Creation and seeking access
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 	StartProcesses();
+
+	while (!_kbhit())
+	{
+		Thread::Sleep(1000);
+	}
+
+	PMData->Shutdown.Status = 0xFF;
+
 	return 0;
 }
 

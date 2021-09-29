@@ -26,6 +26,13 @@
 	#include <sys/time.h>
 #endif
 
+#include <conio.h>
+#include <SMStructs.h>
+#include <SMObject.h>
+
+using namespace System;
+using namespace System::Diagnostics;
+using namespace System::Threading;
 
 #include "Camera.hpp"
 #include "Ground.hpp"
@@ -240,6 +247,23 @@ void idle() {
 #else
 	usleep(sleep_time_between_frames_in_seconds * 1e6);
 #endif
+	double TimeStamp;
+	__int64 Frequency, Counter;
+	int Shutdown = 0x00;
+
+	// SM Creation and seeking access
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	PMObj.SMAccess();
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
+	QueryPerformanceCounter((LARGE_INTEGER*)&Counter);
+	TimeStamp = (double)Counter / (double)Frequency * 1000; //ms
+	Console::WriteLine("Display time stamp   : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
+	if (PMData->Shutdown.Status) 
+	{
+		exit(-1);
+	}
 };
 
 void keydown(unsigned char key, int x, int y) {
@@ -301,5 +325,4 @@ void motion(int x, int y) {
 	prev_mouse_x = x;
 	prev_mouse_y = y;
 };
-
 
