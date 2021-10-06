@@ -16,25 +16,37 @@ int main()
     SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
     //SM Creation and seeking access
+    PMObj.SMCreate();
     PMObj.SMAccess();
 
     ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
     // Declaration
-    double TimeStamp;
-    __int64 Frequency, Counter;
     int Shutdown = 0x00;
 
-    QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
+    int wait_count = 0;
+    int limit_count = 50;
+
     while (1)
     {
-        QueryPerformanceCounter((LARGE_INTEGER*)&Counter);
-        TimeStamp = (double)Counter / (double)Frequency * 1000; //ms
-        Console::WriteLine("GPS time stamp   : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
-        Thread::Sleep(25);
-        if (PMData->Shutdown.Status) {
-            exit(-1);
+        if (PMData->Heartbeat.Flags.GPS == 0)
+        {
+            std::cout << "GPS Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.GPS) << std::endl;
+            PMData->Heartbeat.Flags.GPS = 1;
+            wait_count = 0;
         }
+        else
+        {
+            wait_count++;
+            if (wait_count > limit_count)
+            {
+                std::cout << "Shudown PM" << std::endl;
+                PMData->Shutdown.Status = 0xFF;
+                break;
+            }
+        }
+        std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
+        Thread::Sleep(25);
     }
 
     return 0;

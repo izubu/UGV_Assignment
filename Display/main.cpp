@@ -247,23 +247,36 @@ void idle() {
 #else
 	usleep(sleep_time_between_frames_in_seconds * 1e6);
 #endif
-	double TimeStamp;
-	__int64 Frequency, Counter;
-	int Shutdown = 0x00;
-
-	// SM Creation and seeking access
 	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+
+	//SM Creation and seeking access
+	PMObj.SMCreate();
 	PMObj.SMAccess();
+
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
-	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
-	QueryPerformanceCounter((LARGE_INTEGER*)&Counter);
-	TimeStamp = (double)Counter / (double)Frequency * 1000; //ms
-	Console::WriteLine("Display time stamp   : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
-	if (PMData->Shutdown.Status) 
+	// Declaration
+	int Shutdown = 0x00;
+
+	int wait_count = 0;
+	int limit_count = 50;
+
+	if (PMData->Heartbeat.Flags.VehicleControl == 0)
 	{
-		exit(-1);
+		std::cout << "Vehicle Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.VehicleControl) << std::endl;
+		PMData->Heartbeat.Flags.VehicleControl = 1;
+		wait_count = 0;
 	}
+	else
+	{
+		wait_count++;
+		if (wait_count > limit_count)
+		{
+			std::cout << "Shudown PM" << std::endl;
+			PMData->Shutdown.Status = 0xFF;
+		}
+	}
+	std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
 };
 
 void keydown(unsigned char key, int x, int y) {
