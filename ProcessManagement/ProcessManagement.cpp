@@ -47,8 +47,10 @@ int main()
 	PMData->Heartbeat.Status = 0b00000000;
 
 	StartProcesses();
-	int wait_count[5] = { 0, 0, 0, 0, 0 };
-	int limit_count[5] = { 50, 50, 50, 50, 50 };
+	int LIMIT = 15;
+
+	array<int>^ wait_count = gcnew array<int>(NUM_UNITS) { 0, 0, 0, 0, 0 };
+	//array<int>^ Critical = gcnew array<int>(NUM_UNITS) { 1, 1, 1, 1, 0 };
 
 	while (1)
 	{
@@ -60,7 +62,7 @@ int main()
 		else
 		{
 			wait_count[0]++;
-			if (wait_count[0] > limit_count[0])
+			if (wait_count[0] > LIMIT)
 			{
 				std::cout << "Shudown GPS" << std::endl;
 				StartProcess(0);
@@ -76,7 +78,7 @@ int main()
 		else
 		{
 			wait_count[1]++;
-			if (wait_count[1] > limit_count[1])
+			if (wait_count[1] > LIMIT)
 			{
 				std::cout << "Shudown LASER" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
@@ -93,7 +95,7 @@ int main()
 		else
 		{
 			wait_count[2]++;
-			if (wait_count[2] > limit_count[2])
+			if (wait_count[2] > LIMIT)
 			{
 				std::cout << "Shudown Vehicle Control" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
@@ -110,7 +112,7 @@ int main()
 		else
 		{
 			wait_count[3]++;
-			if (wait_count[3] > limit_count[3])
+			if (wait_count[3] > LIMIT)
 			{
 				std::cout << "Shudown Display" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
@@ -127,7 +129,7 @@ int main()
 		else
 		{
 			wait_count[4]++;
-			if (wait_count[4] > limit_count[4])
+			if (wait_count[4] > LIMIT)
 			{
 				std::cout << "Shudown Camera" << std::endl;
 				PMData->Shutdown.Status = 0xFF;

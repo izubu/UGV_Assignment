@@ -110,7 +110,7 @@ void idle()
 	int Shutdown = 0x00;
 
 	int wait_count = 0;
-	int limit_count = 50;
+	int LIMIT = 15;
 
 	while (1)
 	{
@@ -123,7 +123,7 @@ void idle()
 		else
 		{
 			wait_count++;
-			if (wait_count > limit_count)
+			if (wait_count > LIMIT)
 			{
 				std::cout << "Shudown PM" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
