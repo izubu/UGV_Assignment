@@ -259,7 +259,7 @@ void idle() {
 	int Shutdown = 0x00;
 
 	int wait_count = 0;
-	int LIMIT = 15;
+	int LIMIT = 50;
 
 	while (1)
 	{

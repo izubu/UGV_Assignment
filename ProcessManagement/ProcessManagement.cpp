@@ -47,7 +47,7 @@ int main()
 	PMData->Heartbeat.Status = 0b00000000;
 
 	StartProcesses();
-	int LIMIT = 15;
+	int LIMIT = 50;
 
 	array<int>^ wait_count = gcnew array<int>(NUM_UNITS) { 0, 0, 0, 0, 0 };
 	//array<int>^ Critical = gcnew array<int>(NUM_UNITS) { 1, 1, 1, 1, 0 };
