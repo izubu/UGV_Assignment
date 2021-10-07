@@ -261,22 +261,29 @@ void idle() {
 	int wait_count = 0;
 	int limit_count = 50;
 
-	if (PMData->Heartbeat.Flags.VehicleControl == 0)
+	while (1)
 	{
-		std::cout << "Vehicle Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.VehicleControl) << std::endl;
-		PMData->Heartbeat.Flags.VehicleControl = 1;
-		wait_count = 0;
-	}
-	else
-	{
-		wait_count++;
-		if (wait_count > limit_count)
+		if (PMData->Heartbeat.Flags.Display == 0)
 		{
-			std::cout << "Shudown PM" << std::endl;
-			PMData->Shutdown.Status = 0xFF;
+			std::cout << "Display Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.Display) << std::endl;
+			PMData->Heartbeat.Flags.Display = 1;
+			wait_count = 0;
 		}
+		else
+		{
+			wait_count++;
+			if (wait_count > limit_count)
+			{
+				std::cout << "Shudown PM" << std::endl;
+				PMData->Shutdown.Status = 0xFF;
+				exit(-1);
+			}
+		}
+		std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
+		Thread::Sleep(25);
 	}
-	std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
+	
+
 };
 
 void keydown(unsigned char key, int x, int y) {

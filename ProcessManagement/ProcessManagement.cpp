@@ -17,7 +17,7 @@ using namespace System::Text;
 using namespace System::Diagnostics;
 using namespace System::Threading;
 
-#define NUM_UNITS 3
+#define NUM_UNITS 5
 
 bool IsProcessRunning(const char* processName);
 void StartProcesses();
@@ -27,8 +27,8 @@ void StartProcess(int i);
 TCHAR Units[10][20] = //
 {
 	TEXT("GPS.exe"),
-	/*TEXT("Camera.exe"),
-	TEXT("Display.exe"),*/
+	TEXT("Camera.exe"),
+	TEXT("Display.exe"),
 	TEXT("LASER.exe"),
 	TEXT("VehicleControl.exe")
 };
@@ -47,14 +47,14 @@ int main()
 	PMData->Heartbeat.Status = 0b00000000;
 
 	StartProcesses();
-	int wait_count[3] = { 0, 0, 0 };
-	int limit_count[3] = { 50, 50, 50 };
+	int wait_count[5] = { 0, 0, 0, 0, 0 };
+	int limit_count[5] = { 50, 50, 50, 50, 50 };
 
 	while (1)
 	{
 		if (PMData->Heartbeat.Flags.GPS == 1)
 		{
-		std::cout << "GPS Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.GPS) << std::endl;
+		// std::cout << "GPS Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.GPS) << std::endl;
 			PMData->Heartbeat.Flags.GPS = 0; wait_count[0] = 0;
 		}
 		else
@@ -98,6 +98,40 @@ int main()
 				std::cout << "Shudown Vehicle Control" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
 				PMData->deadProcess = 2;
+				break;
+
+			}
+		}
+		if (PMData->Heartbeat.Flags.Display == 1)
+		{
+			//std::cout << "Laser Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.Display) << std::endl;
+			PMData->Heartbeat.Flags.Display = 0; wait_count[3] = 0;
+		}
+		else
+		{
+			wait_count[3]++;
+			if (wait_count[3] > limit_count[3])
+			{
+				std::cout << "Shudown Display" << std::endl;
+				PMData->Shutdown.Status = 0xFF;
+				PMData->deadProcess = 3;
+				break;
+
+			}
+		}
+		if (PMData->Heartbeat.Flags.Camera == 1)
+		{
+			//std::cout << "Laser Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.Display) << std::endl;
+			PMData->Heartbeat.Flags.Camera = 0; wait_count[4] = 0;
+		}
+		else
+		{
+			wait_count[4]++;
+			if (wait_count[4] > limit_count[4])
+			{
+				std::cout << "Shudown Camera" << std::endl;
+				PMData->Shutdown.Status = 0xFF;
+				PMData->deadProcess = 4;
 				break;
 
 			}

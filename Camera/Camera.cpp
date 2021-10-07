@@ -99,21 +99,39 @@ void idle()
 	}
 
 	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+
+	//SM Creation and seeking access
+	PMObj.SMCreate();
 	PMObj.SMAccess();
 
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
-	
-	double TimeStamp;
-	__int64 Frequency, Counter;
+
+	// Declaration
 	int Shutdown = 0x00;
 
-	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
-	QueryPerformanceCounter((LARGE_INTEGER*)&Counter);
-	TimeStamp = (double)Counter / (double)Frequency * 1000; //ms
-	Console::WriteLine("Camera time stamp   : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
-	Thread::Sleep(25);
-	if (PMData->Shutdown.Status) {
-		exit(0);
+	int wait_count = 0;
+	int limit_count = 50;
+
+	while (1)
+	{
+		if (PMData->Heartbeat.Flags.Camera == 0)
+		{
+			std::cout << "Camera Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.Camera) << std::endl;
+			PMData->Heartbeat.Flags.Camera = 1;
+			wait_count = 0;
+		}
+		else
+		{
+			wait_count++;
+			if (wait_count > limit_count)
+			{
+				std::cout << "Shudown PM" << std::endl;
+				PMData->Shutdown.Status = 0xFF;
+				exit(-1);
+			}
+		}
+		std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
+		Thread::Sleep(25);
 	}
 	display();
 }
