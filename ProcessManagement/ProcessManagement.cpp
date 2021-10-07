@@ -45,10 +45,11 @@ int main()
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
 	PMData->Heartbeat.Status = 0b00000000;
+	//std::cout << "STARTED" << std::endl;
 
 	StartProcesses();
-	int LIMIT = 50;
-
+	int LIMIT = 20;
+	
 	array<int>^ wait_count = gcnew array<int>(NUM_UNITS) { 0, 0, 0, 0, 0 };
 	//array<int>^ Critical = gcnew array<int>(NUM_UNITS) { 1, 1, 1, 1, 0 };
 
@@ -144,7 +145,7 @@ int main()
 			PMData->Shutdown.Status = 0xFF;
 			break;
 		}
-		Thread::Sleep(25);
+		Thread::Sleep(100);
 	}
 
 	PMData->Shutdown.Status = 0xFF;

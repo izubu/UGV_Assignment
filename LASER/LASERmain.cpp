@@ -43,7 +43,7 @@ int main()
             }
         }
         std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
-        Thread::Sleep(25);
+        Thread::Sleep(100);
     }
     
     return 0;
