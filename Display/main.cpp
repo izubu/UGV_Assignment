@@ -109,17 +109,15 @@ int main(int argc, char ** argv) {
 	// -------------------------------------------------------------------------
 	vehicle = new MyVehicle();
 
-
-	glutMainLoop();
-
 	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
 	//SM Creation and seeking access
 	PMObj.SMCreate();
 	PMObj.SMAccess();
 
-	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
-
+	glutMainLoop();
+	
 	if (vehicle != NULL) {
 		delete vehicle;
 	}

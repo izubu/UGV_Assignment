@@ -47,8 +47,6 @@ int main(int argc, char** argv)
 	subscriber.connect("tcp://192.168.1.200:26000");
 	subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
-	glutMainLoop();
-
 	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
 	//SM Creation and seeking access
@@ -57,6 +55,9 @@ int main(int argc, char** argv)
 
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
+
+	glutMainLoop();
+		
 	return 1;
 }
 
