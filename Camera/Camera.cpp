@@ -112,27 +112,24 @@ void idle()
 	int wait_count = 0;
 	int LIMIT = 50;
 
-	while (1)
+	if (PMData->Heartbeat.Flags.Camera == 0)
 	{
-		if (PMData->Heartbeat.Flags.Camera == 0)
-		{
 			std::cout << "Camera Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.Camera) << std::endl;
 			PMData->Heartbeat.Flags.Camera = 1;
 			wait_count = 0;
-		}
-		else
-		{
-			wait_count++;
-			if (wait_count > LIMIT)
-			{
-				std::cout << "Shudown PM" << std::endl;
-				PMData->Shutdown.Status = 0xFF;
-				exit(-1);
-			}
-		}
-		std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
-		Thread::Sleep(100);
 	}
+	else
+	{
+		wait_count++;
+		if (wait_count > LIMIT)
+		{
+			std::cout << "Shudown PM" << std::endl;
+			PMData->Shutdown.Status = 0xFF;
+			exit(-1);
+		}
+	}
+	std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
+	Thread::Sleep(100);
 	display();
 }
 
