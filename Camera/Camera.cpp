@@ -24,6 +24,8 @@ GLuint tex;
 zmq::context_t context(1);
 zmq::socket_t subscriber(context, ZMQ_SUB);
 
+int wait_count = 0;
+
 int main(int argc, char** argv)
 {
 	//Define window size
@@ -46,6 +48,14 @@ int main(int argc, char** argv)
 	subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
 	glutMainLoop();
+
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+
+	//SM Creation and seeking access
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
 	return 1;
 }
@@ -100,8 +110,7 @@ void idle()
 
 	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
-	//SM Creation and seeking access
-	PMObj.SMCreate();
+	//SM seeking access
 	PMObj.SMAccess();
 
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
@@ -109,8 +118,7 @@ void idle()
 	// Declaration
 	int Shutdown = 0x00;
 
-	int wait_count = 0;
-	int LIMIT = 50;
+	int LIMIT = 25;
 
 	if (PMData->Heartbeat.Flags.Camera == 0)
 	{

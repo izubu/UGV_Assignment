@@ -22,7 +22,7 @@ int main()
     int Shutdown = 0x00;
 
     int wait_count = 0;
-    int LIMIT = 50;
+    int LIMIT = 25;
 
     while (1)
     {

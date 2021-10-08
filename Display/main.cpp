@@ -71,6 +71,8 @@ Vehicle * vehicle = NULL;
 double speed = 0;
 double steering = 0;
 
+int wait_count = 0;
+
 //int _tmain(int argc, _TCHAR* argv[]) {
 int main(int argc, char ** argv) {
 
@@ -109,6 +111,14 @@ int main(int argc, char ** argv) {
 
 
 	glutMainLoop();
+
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+
+	//SM Creation and seeking access
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
 	if (vehicle != NULL) {
 		delete vehicle;
@@ -249,8 +259,7 @@ void idle() {
 #endif
 	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
-	//SM Creation and seeking access
-	PMObj.SMCreate();
+	//SM seeking access
 	PMObj.SMAccess();
 
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
@@ -258,8 +267,7 @@ void idle() {
 	// Declaration
 	int Shutdown = 0x00;
 
-	int wait_count = 0;
-	int LIMIT = 50;
+	int LIMIT = 25;
 
 	if (PMData->Heartbeat.Flags.Display == 0)
 	{
