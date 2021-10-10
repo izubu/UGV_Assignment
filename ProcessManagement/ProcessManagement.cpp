@@ -83,7 +83,7 @@ int main()
 			{
 				std::cout << "Shudown LASER" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
-				PMData->deadProcess = 1;
+				PMData->deadProcess = 3;
 				break;
 
 			}
@@ -100,7 +100,7 @@ int main()
 			{
 				std::cout << "Shudown Vehicle Control" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
-				PMData->deadProcess = 2;
+				PMData->deadProcess = 4;
 				break;
 
 			}
@@ -117,7 +117,7 @@ int main()
 			{
 				std::cout << "Shudown Display" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
-				PMData->deadProcess = 3;
+				PMData->deadProcess = 2;
 				break;
 
 			}
@@ -134,7 +134,7 @@ int main()
 			{
 				std::cout << "Shudown Camera" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
-				PMData->deadProcess = 4;
+				PMData->deadProcess = 1;
 				break;
 
 			}
@@ -150,10 +150,10 @@ int main()
 
 	PMData->Shutdown.Status = 0xFF;
 	std::cout << Units[PMData->deadProcess] << " has died.\n";
-	/*while (1)
+	while (1)
 	{
 		Thread::Sleep(25);
-	}*/
+	}
 
 	return 0;
 }
@@ -199,6 +199,10 @@ void StartProcesses()
 			std::cout << "Started: " << Units[i] << std::endl;
 			Sleep(100);
 		}
+		else
+		{
+			std::cout << Units[i] << " already running" << std::endl;
+		}
 	}
 }
 
@@ -220,5 +224,9 @@ void StartProcess(int i)
 		}
 		std::cout << "Started: " << Units[i] << std::endl;
 		Sleep(100);
+	}
+	else
+	{
+		std::cout << Units[i] << " already running" << std::endl;
 	}
 }
