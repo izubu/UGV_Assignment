@@ -47,8 +47,13 @@ int main()
 	// String to store received data for display
 	String^ ResponseData;
 
+	std::cout << "LASER not connected" << std::endl;
+
 	// Create TcpClient object and connect to it
 	Client = gcnew TcpClient("192.168.1.200", PortNumber);
+
+	std::cout << "LASER connected" << std::endl;
+
 	// Configure connection
 	Client->NoDelay = true;
 	Client->ReceiveTimeout = 500;//ms
@@ -56,21 +61,26 @@ int main()
 	Client->ReceiveBufferSize = 1024;
 	Client->SendBufferSize = 1024;
 
+	std::cout << "LASER configured" << std::endl;
+
 	// unsigned char arrays of 16 bytes each are created on managed heap
 	SendData = gcnew array<unsigned char>(16);
 	ReadData = gcnew array<unsigned char>(2500);
 	// Convert string command to an array of unsigned char
 	SendData = System::Text::Encoding::ASCII->GetBytes(zID);
 
-	std::cout << "Process" << std::endl;
-
-	// Get the network streab object associated with clien so we 
+	// Get the network stream object associated with client so we 
 	// can use it to read and write
 	NetworkStream^ Stream = Client->GetStream();
+	
+	std::cout << "Unauthenticate User" << std::endl;
 
 	// Authenticate User
 	// Convert string command to an array of unsigned char
 	SendData = System::Text::Encoding::ASCII->GetBytes(zID);
+	
+	std::cout << "Authenticate User" << std::endl;
+
 	Stream->Write(SendData, 0, SendData->Length);
 	// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
 	System::Threading::Thread::Sleep(10);
@@ -78,29 +88,21 @@ int main()
 	Stream->Read(ReadData, 0, ReadData->Length);
 	// Convert incoming data from an array of unsigned char bytes to an ASCII string
 	ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
+
+	std::cout << "Changes bytes to ASCII string" << std::endl;
+
 	// Print the received string on the screen
 	/*Console::WriteLine(ResponseData);
 	Console::ReadKey();*/
 
-	SendData = System::Text::Encoding::ASCII->GetBytes(AskScan);
+	std::cout << "Initalising SendData" << std::endl;
+
+	/*SendData = System::Text::Encoding::ASCII->GetBytes(AskScan);*/
 
 
 	//Loop
-	while (_kbhit())
+	while (1)
 	{
-		// Write command asking for data
-		Stream->WriteByte(0x02);
-		Stream->Write(SendData, 0, SendData->Length);
-		Stream->WriteByte(0x03);
-		// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
-		System::Threading::Thread::Sleep(10);
-		// Read the incoming data
-		Stream->Read(ReadData, 0, ReadData->Length);
-		// Convert incoming data from an array of unsigned char bytes to an ASCII string
-		ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
-		// Print the received string on the screen
-		Console::WriteLine(ResponseData);
-
 		if (PMData->Heartbeat.Flags.Laser == 0)
 		{
 			std::cout << "LASER Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.Laser) << std::endl;
@@ -115,12 +117,52 @@ int main()
 			{
 				std::cout << "Shudown PM" << std::endl;
 				PMData->Shutdown.Status = 0xFF;
-				break;
+				return 1;
 			}
 		}
 		std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
+		std::cout << "Sending to Eternet" << std::endl;
+
+		// Write command asking for data
+		Stream->WriteByte(0x02);
+		SendData = System::Text::Encoding::ASCII->GetBytes(AskScan);
+		Stream->Write(SendData, 0, SendData->Length);
+		Stream->WriteByte(0x03);
+		// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
+		System::Threading::Thread::Sleep(10);
 		
+		std::cout << "Reading from Eternet" << std::endl;
 		
+		// Read the incoming data
+		Stream->Read(ReadData, 0, ReadData->Length);
+
+		std::cout << "Converts and prints raw data" << std::endl;
+
+		// Convert incoming data from an array of unsigned char bytes to an ASCII string
+		ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
+		// Print the received string on the screen
+		Console::WriteLine(ResponseData);
+
+		array<wchar_t>^ Space = { ' ' };
+		array<String^>^ StringArray = ResponseData->Split(Space);
+
+		double StartAngle = System::Convert::ToInt32(StringArray[23], 16);
+		double Resolution = System::Convert::ToInt32(StringArray[24], 16)/10000.0;
+		int NumRanges = System::Convert::ToInt32(StringArray[25], 16);
+
+		array<double> ^Range = gcnew array<double>(NumRanges);
+		array<double> ^RangeX = gcnew array<double>(NumRanges);
+		array<double>^ RangeY = gcnew array<double>(NumRanges);
+
+		std::cout << "Converts and prints coordinates" << std::endl;
+		for (int i = 0; i < NumRanges; i++)
+		{
+			Range[i] = System::Convert::ToInt32(StringArray[25 + i], 16);
+			RangeX[i] = Range[i] * sin(i * Resolution);
+			RangeY[i] = -Range[i] * cos(i * Resolution);
+			std::cout << "(" << RangeX[i] << " " << RangeY[i] << ")" << std::endl;
+		}
+
 	}
 
 	Stream->Close();
