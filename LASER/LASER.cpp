@@ -4,17 +4,55 @@
 
 int LASER::connect(String^ hostName, int portNumber)
 {
-	// YOUR CODE HERE
+	//// Pointer to TcpClent type object on managed heap
+	//TcpClient^ Client;
+	//// arrays of unsigned chars to send and receive data
+	//array<unsigned char>^ SendData;
+	//array<unsigned char>^ ReadData;
+	//// Create TcpClient object and connect to it
+	//Client = gcnew TcpClient(hostName, portNumber);
+	//// Configure connection
+	//Client->NoDelay = true;
+	//Client->ReceiveTimeout = 500;//ms
+	//Client->SendTimeout = 500;//ms
+	//Client->ReceiveBufferSize = 1024;
+	//Client->SendBufferSize = 1024;
+
 	return 1;
 }
 int LASER::setupSharedMemory()
 {
-	// YOUR CODE HERE
+	//SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	////SM Creation and seeking access
+	//PMObj.SMCreate();
+	//PMObj.SMAccess();
+	//ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+
 	return 1;
 }
 int LASER::getData()
 {
-	// YOUR CODE HERE
+	//array<unsigned char>^ SendData;
+	//// String command to ask for Channel 1 analogue voltage from the PLC
+	//// These command are available on Galil RIO47122 command reference manual
+	//// available online
+	//String^ AskScan = gcnew String("sRN LMDscandata");
+	//// String to store received data for display
+	//String^ ResponseData;
+
+	//SendData = System::Text::Encoding::ASCII->GetBytes(AskScan);
+
+	//// Write command asking for data
+	//Stream->WriteByte(0x02);
+	//Stream->Write(SendData, 0, SendData->Length);
+	//Stream->WriteByte(0x03);
+	//// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
+	//System::Threading::Thread::Sleep(10);
+	//// Read the incoming data
+	//Stream->Read(ReadData, 0, ReadData->Length);
+	//// Convert incoming data from an array of unsigned char bytes to an ASCII string
+	//ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
+
 	return 1;
 }
 int LASER::checkData()
