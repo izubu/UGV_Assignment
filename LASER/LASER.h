@@ -18,10 +18,11 @@ public:
 	int checkData() override;
 	int sendDataToSharedMemory() override;
 	bool getShutdownFlag() override;
+	int checkHeartbeat() override;
 	int setHeartbeat(bool heartbeat) override;
 	~LASER();
 
 protected:
 	// YOUR CODE HERE (ADDITIONAL MEMBER VARIABLES THAT YOU MAY WANT TO ADD)
-
+	ProcessManagement* PMData;
 };
