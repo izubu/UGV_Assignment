@@ -29,8 +29,8 @@ TCHAR Units[10][20] = //
 	TEXT("GPS.exe"),
 	TEXT("Camera.exe"),
 	TEXT("Display.exe"),
-	TEXT("LASER1.exe"),
-	TEXT("VehicleControl.exe")
+	TEXT("VehicleControl.exe"),
+	TEXT("LASER.exe")
 };
 
 int main()
@@ -150,10 +150,10 @@ int main()
 
 	PMData->Shutdown.Status = 0xFF;
 	std::cout << Units[PMData->deadProcess] << " has died.\n";
-	/*while (1)
+	while (1)
 	{
 		Thread::Sleep(25);
-	}*/
+	}
 
 	return 0;
 }

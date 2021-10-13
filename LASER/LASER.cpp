@@ -7,16 +7,14 @@ int LASER::connect(String^ hostName, int portNumber)
 	String^ zID = gcnew String("z5267112\n");
 	// Pointer to TcpClent type object on managed heap
 	std::cout << "create arrays for sending and reading data" << std::endl;
-	// arrays of unsigned chars to send and receive data
-	array<unsigned char>^ SendData;
-	array<unsigned char>^ ReadData;
+	
 	// String command to ask for Channel 1 analogue voltage from the PLC
 	// These command are available on Galil RIO47122 command reference manual
 	// available online
 	String^ AskScan = gcnew String("sRN LMDscandata");
 	std::cout << "Call responseData" << std::endl;
 	// String to store received data for display
-	String^ ResponseData;
+
 	std::cout << "create client to store" << std::endl;
 	// Create TcpClient object and connect to it
 	Client = gcnew TcpClient(hostName, portNumber);
@@ -72,13 +70,13 @@ int LASER::setupSharedMemory()
 }
 int LASER::getData()
 {
-	array<unsigned char>^ SendData;
+	
 	// String command to ask for Channel 1 analogue voltage from the PLC
 	// These command are available on Galil RIO47122 command reference manual
 	// available online
 	String^ AskScan = gcnew String("sRN LMDscandata");
 	// String to store received data for display
-	String^ ResponseData;
+	
 
 	SendData = System::Text::Encoding::ASCII->GetBytes(AskScan);
 
@@ -98,7 +96,6 @@ int LASER::getData()
 int LASER::checkData()
 {
 	int PI = 3.14159265;
-	String^ ResponseData;
 	if (ResponseData->StartsWith("sRA"))
 	{
 		array<wchar_t>^ Space = { ' ' };
@@ -120,13 +117,14 @@ int LASER::checkData()
 			RangeY[i] = -Range[i] * cos(double(i) * Resolution * PI / 180.0);
 			std::cout << i + 1 << "(" << RangeX[i] << " " << RangeY[i] << ")" << std::endl;
 		}
+	} else{
+			std::cout << "Bad data \n";
 	}
 	return 1;
 }
 int LASER::sendDataToSharedMemory()
 {
-	Stream->Close();
-	Client->Close();
+	
 
 	Console::ReadKey();
 	Console::ReadKey();
@@ -139,14 +137,8 @@ bool LASER::getShutdownFlag()
 }
 int LASER::checkHeartbeat()
 {
-	if (PMData->Heartbeat.Flags.Laser == 0)
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
+
+	return PMData->Heartbeat.Flags.Laser;
 }
 int LASER::setHeartbeat(bool heartbeat)
 {
@@ -155,6 +147,8 @@ int LASER::setHeartbeat(bool heartbeat)
 }
 LASER::~LASER()
 {
+	Stream->Close();
+	Client->Close();
 	// YOUR CODE HERE
 }
 

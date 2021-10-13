@@ -12,14 +12,15 @@ using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Text;
 
+void lazyLoop();
 
 int main()
 {
 	
-	LASER laserdata;
+	LASER^ laserdata = gcnew LASER;
 	std::cout << "Start" << std::endl;
 
-	laserdata.setupSharedMemory();
+	laserdata->setupSharedMemory();
 	std::cout << "Start1" << std::endl;
 
 	// Declaration
@@ -31,17 +32,16 @@ int main()
 	int PortNumber = 23000;
 	String^ ipAddress = gcnew String("192.168.1.200");
 	
-	laserdata.connect(ipAddress, PortNumber);
+	laserdata->connect(ipAddress, PortNumber);
 
 	std::cout << "Start2" << std::endl;
-
 	//Loop
 	while (1)
 	{
-		if (laserdata.checkHeartbeat())
+		if (!laserdata->checkHeartbeat())
 		{
-			std::cout << "LASER Heartbeat is " << static_cast<unsigned>(laserdata.checkHeartbeat()) << std::endl;
-			laserdata.setHeartbeat(true);
+			std::cout << "LASER Heartbeat is " << static_cast<unsigned>(laserdata->checkHeartbeat()) << std::endl;
+			laserdata->setHeartbeat(true);
 			wait_count = 0;
 
 		}
@@ -51,20 +51,23 @@ int main()
 			if (wait_count > LIMIT)
 			{
 				std::cout << "Shudown PM" << std::endl;
-				laserdata.getShutdownFlag();
+				laserdata->getShutdownFlag();
 				return 1;
 			}
 		}
+		
 		std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
 		std::cout << "Sending to Eternet" << std::endl;
 
-		laserdata.getData();
+		laserdata->getData();
+		std::cout << "finished getting data" << std::endl;
 
-		laserdata.checkData();
+		laserdata->checkData();
+		Thread::Sleep(25);
 
 	}
 
-	laserdata.sendDataToSharedMemory();
+	laserdata->sendDataToSharedMemory();
     
     
 
@@ -91,4 +94,11 @@ int main()
     }*/
     
     return 0;
+}
+
+void lazyLoop() {
+	while (1)
+	{
+		Thread::Sleep(25);
+	}
 }
