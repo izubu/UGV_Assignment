@@ -150,10 +150,10 @@ int main()
 
 	PMData->Shutdown.Status = 0xFF;
 	std::cout << Units[PMData->deadProcess] << " has died.\n";
-	while (1)
+	/*while (1)
 	{
 		Thread::Sleep(25);
-	}
+	}*/
 
 	return 0;
 }

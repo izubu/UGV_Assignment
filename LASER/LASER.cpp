@@ -95,7 +95,7 @@ int LASER::getData()
 }
 int LASER::checkData()
 {
-	int PI = 3.14159265;
+	double PI = 3.14159265;
 	if (ResponseData->StartsWith("sRA"))
 	{
 		array<wchar_t>^ Space = { ' ' };
@@ -115,7 +115,7 @@ int LASER::checkData()
 			Range[i] = System::Convert::ToInt32(StringArray[25 + i], 16);
 			RangeX[i] = Range[i] * sin(double(i) * Resolution * PI / 180.0);
 			RangeY[i] = -Range[i] * cos(double(i) * Resolution * PI / 180.0);
-			std::cout << i + 1 << "(" << RangeX[i] << " " << RangeY[i] << ")" << std::endl;
+			std::cout << i + 1 << " (" << RangeX[i] << ", " << RangeY[i] << ")" << std::endl;
 		}
 	} else{
 			std::cout << "Bad data \n";
