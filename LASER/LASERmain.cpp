@@ -17,8 +17,10 @@ int main()
 {
 	
 	LASER laserdata;
-	
+	std::cout << "Start" << std::endl;
+
 	laserdata.setupSharedMemory();
+	std::cout << "Start1" << std::endl;
 
 	// Declaration
 	int Shutdown = 0x00;
@@ -31,6 +33,7 @@ int main()
 	
 	laserdata.connect(ipAddress, PortNumber);
 
+	std::cout << "Start2" << std::endl;
 
 	//Loop
 	while (1)

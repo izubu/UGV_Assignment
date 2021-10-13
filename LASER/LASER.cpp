@@ -6,7 +6,7 @@ int LASER::connect(String^ hostName, int portNumber)
 {
 	String^ zID = gcnew String("z5267112\n");
 	// Pointer to TcpClent type object on managed heap
-	TcpClient^ Client;
+	std::cout << "create arrays for sending and reading data" << std::endl;
 	// arrays of unsigned chars to send and receive data
 	array<unsigned char>^ SendData;
 	array<unsigned char>^ ReadData;
@@ -14,10 +14,13 @@ int LASER::connect(String^ hostName, int portNumber)
 	// These command are available on Galil RIO47122 command reference manual
 	// available online
 	String^ AskScan = gcnew String("sRN LMDscandata");
+	std::cout << "Call responseData" << std::endl;
 	// String to store received data for display
 	String^ ResponseData;
+	std::cout << "create client to store" << std::endl;
 	// Create TcpClient object and connect to it
 	Client = gcnew TcpClient(hostName, portNumber);
+	std::cout << "config connection" << std::endl;
 	// Configure connection
 	Client->NoDelay = true;
 	Client->ReceiveTimeout = 500;//ms
@@ -28,20 +31,26 @@ int LASER::connect(String^ hostName, int portNumber)
 	// unsigned char arrays of 16 bytes each are created on managed heap
 	SendData = gcnew array<unsigned char>(16);
 	ReadData = gcnew array<unsigned char>(2500);
+	std::cout << "create arrays for sending and reading data" << std::endl;
 	// Convert string command to an array of unsigned char
 	SendData = System::Text::Encoding::ASCII->GetBytes(zID);
 
+	std::cout << "get stream and use to read/write" << std::endl;
 	// Get the network stream object associated with client so we 
 	// can use it to read and write
-	NetworkStream^ Stream = Client->GetStream();
-
-	SendData = System::Text::Encoding::ASCII->GetBytes(zID);
+	Stream = Client->GetStream();
 
 	Stream->Write(SendData, 0, SendData->Length);
+
+	std::cout << "server prepares for data" << std::endl;
 	// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
 	System::Threading::Thread::Sleep(10);
+
+	std::cout << "read data" << std::endl;
 	// Read the incoming data
 	Stream->Read(ReadData, 0, ReadData->Length);
+
+	std::cout << "convert to ASCII" << std::endl;
 	// Convert incoming data from an array of unsigned char bytes to an ASCII string
 	ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
 
@@ -88,6 +97,7 @@ int LASER::getData()
 }
 int LASER::checkData()
 {
+	int PI = 3.14159265;
 	String^ ResponseData;
 	if (ResponseData->StartsWith("sRA"))
 	{
@@ -106,9 +116,9 @@ int LASER::checkData()
 		for (int i = 0; i < NumRanges; i++)
 		{
 			Range[i] = System::Convert::ToInt32(StringArray[25 + i], 16);
-			RangeX[i] = Range[i] * sin(i * Resolution);
-			RangeY[i] = -Range[i] * cos(i * Resolution);
-			std::cout << "(" << RangeX[i] << " " << RangeY[i] << ")" << std::endl;
+			RangeX[i] = Range[i] * sin(double(i) * Resolution * PI / 180.0);
+			RangeY[i] = -Range[i] * cos(double(i) * Resolution * PI / 180.0);
+			std::cout << i + 1 << "(" << RangeX[i] << " " << RangeY[i] << ")" << std::endl;
 		}
 	}
 	return 1;
