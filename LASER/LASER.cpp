@@ -124,8 +124,6 @@ int LASER::checkData()
 }
 int LASER::sendDataToSharedMemory()
 {
-	
-
 	Console::ReadKey();
 	Console::ReadKey();
 	return 1;
@@ -137,7 +135,6 @@ bool LASER::getShutdownFlag()
 }
 int LASER::checkHeartbeat()
 {
-
 	return PMData->Heartbeat.Flags.Laser;
 }
 int LASER::setHeartbeat(bool heartbeat)

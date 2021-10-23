@@ -13,13 +13,11 @@ using namespace System::Threading;
 
 int main()
 {
-    SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+    GPS^ gpsdata = gcnew GPS;
+    std::cout << "Start GPS" << std::endl;
 
-    //SM Creation and seeking access
-    PMObj.SMCreate();
-    PMObj.SMAccess();
-
-    ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+	gpsdata->setupSharedMemory();
+	std::cout << "Successful with shared memory" << std::endl;
 
     // Declaration
     int Shutdown = 0x00;
@@ -27,24 +25,30 @@ int main()
     int wait_count = 0;
     int LIMIT = 25;
 
+	int PortNumber = 24000;
+	String^ ipAddress = gcnew String("192.168.1.200");
+
+	gpsdata->connect(ipAddress, PortNumber);
+	std::cout << "Successful with connection" << std::endl;
+
     while (1)
     {
-        if (PMData->Heartbeat.Flags.GPS == 0)
-        {
-            std::cout << "GPS Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.GPS) << std::endl;
-            PMData->Heartbeat.Flags.GPS = 1;
-            wait_count = 0;
-        }
-        else
-        {
-            wait_count++;
-            if (wait_count > LIMIT)
-            {
-                std::cout << "Shudown PM" << std::endl;
-                PMData->Shutdown.Status = 0xFF;
-                break;
-            }
-        }
+		if (!gpsdata->checkHeartbeat())
+		{
+			std::cout << "LASER Heartbeat is " << static_cast<unsigned>(gpsdata->checkHeartbeat()) << std::endl;
+			gpsdata->setHeartbeat(true);
+			wait_count = 0;
+		}
+		else
+		{
+			wait_count++;
+			if (wait_count > LIMIT)
+			{
+				std::cout << "Shudown PM" << std::endl;
+				gpsdata->getShutdownFlag();
+				return 1;
+			}
+		}
         std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
         Thread::Sleep(100);
     }

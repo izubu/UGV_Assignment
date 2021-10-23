@@ -18,10 +18,10 @@ int main()
 {
 	
 	LASER^ laserdata = gcnew LASER;
-	std::cout << "Start" << std::endl;
+	std::cout << "Start LASER" << std::endl;
 
 	laserdata->setupSharedMemory();
-	std::cout << "Start1" << std::endl;
+	std::cout << "Successful with shared memory" << std::endl;
 
 	// Declaration
 	int Shutdown = 0x00;
@@ -34,7 +34,7 @@ int main()
 	
 	laserdata->connect(ipAddress, PortNumber);
 
-	std::cout << "Start2" << std::endl;
+	std::cout << "Successfully connected LASER" << std::endl;
 	//Loop
 	while (1)
 	{

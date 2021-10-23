@@ -18,10 +18,15 @@ public:
 	int checkData() override;
 	int sendDataToSharedMemory() override;
 	bool getShutdownFlag() override;
+	int checkHeartbeat() override;
 	int setHeartbeat(bool heartbeat) override;
 	~GPS();
 
 protected:
-	// YOUR CODE HERE (ADDITIONAL MEMBER VARIABLES THAT YOU MAY WANT TO ADD)
-
+	ProcessManagement* PMData;
+	SM_GPS* GPSData;
+	String^ ResponseData;
+	array<unsigned char>^ SendData;
+	array<unsigned char>^ ReadData;
+	array<unsigned char>^ Data;
 };
