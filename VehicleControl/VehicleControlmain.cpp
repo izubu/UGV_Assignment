@@ -13,13 +13,12 @@ using namespace System::Threading;
 
 int main()
 {
-    SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
-    //SM Creation and seeking access
-    PMObj.SMCreate();
-    PMObj.SMAccess();
+    VehicleControl^ VCdata = gcnew VehicleControl;
+    std::cout << "Start VehicleControl" << std::endl;
 
-    ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+    VCdata->setupSharedMemory();
+    std::cout << "Successful with shared memory" << std::endl;
 
     // Declaration
     int Shutdown = 0x00;
@@ -27,12 +26,19 @@ int main()
     int wait_count = 0;
     int LIMIT = 25;
 
+    int PortNumber = 25000;
+    String^ ipAddress = gcnew String("192.168.1.200");
+
+    //VCdata->connect(ipAddress, PortNumber);
+    bool flag = false;
+    std::cout << "Successful with connection" << std::endl;
+
     while (1)
     {
-        if (PMData->Heartbeat.Flags.VehicleControl == 0)
+        if (!VCdata->checkHeartbeat())
         {
-            std::cout << "Vehicle Heartbeat is " << static_cast<unsigned>(PMData->Heartbeat.Flags.VehicleControl) << std::endl;
-            PMData->Heartbeat.Flags.VehicleControl = 1;
+            std::cout << "GPS Heartbeat is " << static_cast<unsigned>(VCdata->checkHeartbeat()) << std::endl;
+            VCdata->setHeartbeat(true);
             wait_count = 0;
         }
         else
@@ -41,12 +47,15 @@ int main()
             if (wait_count > LIMIT)
             {
                 std::cout << "Shudown PM" << std::endl;
-                PMData->Shutdown.Status = 0xFF;
-                break;
+                VCdata->getShutdownFlag();
+                return 1;
             }
         }
         std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
-        Thread::Sleep(100);
+
+        VCdata->getData();
+
+        Thread::Sleep(25);
     }
 
     return 0;

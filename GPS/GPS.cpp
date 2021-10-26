@@ -2,7 +2,6 @@
 #include "GPS.h"
 
 #pragma pack(1)
-
 struct DataGPS//112 bytes
 {
 	unsigned int Header;
@@ -82,6 +81,22 @@ int GPS::getData()
 	std::cout << "read data" << std::endl;
 	// Read the incoming data
 	if (Stream->DataAvailable) {
+		
+		/*array<unsigned char> ^ Data = gcnew array<unsigned char>(2500);
+		Stream->Read(Data, 0, sizeof(DataGPS));
+
+		std::cout << std::hex << *(unsigned int*)(&Data) << std::endl;
+
+		unsigned char* BytePtr = (unsigned char*)&DataG;
+		int j = 0;
+		for (int i = 0; i < sizeof(DataGPS); i++)
+		{
+			std::cout << "Buffering" << std::endl;
+			*(BytePtr++) = ReadData[i];
+			Buffer[i] = ReadData[i];
+			Console::Write("{0:X}", Data[i]);
+		}*/
+		
 		Stream->Read(Data, 0, sizeof(DataGPS));
 
 		std::cout << std::hex << *(unsigned int*)(&Data) << std::endl;
@@ -109,7 +124,7 @@ int GPS::getData()
 		for (int i = Start; i < Start + sizeof(SM_GPS); i++)
 		{
 			std::cout << "Buffering" << std::endl;
-			*(BytePtr++) = ReadData[i];
+			*(BytePtr + Start) = ReadData[i];
 			Buffer[j] = ReadData[i];
 			j++;
 		}

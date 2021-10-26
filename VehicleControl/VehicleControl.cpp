@@ -6,8 +6,6 @@ int VehicleControl::connect(String^ hostName, int portNumber)
 {
 	String^ zID = gcnew String("z5267112\n");
 	// Pointer to TcpClent type object on managed heap
-	std::cout << "create arrays for sending and reading data" << std::endl;
-
 	std::cout << "create client to store" << std::endl;
 	// Create TcpClient object and connect to it
 	Client = gcnew TcpClient(hostName, portNumber);
@@ -62,6 +60,8 @@ int VehicleControl::setupSharedMemory()
 	SensorData->SMCreate();
 	SensorData->SMAccess();
 	VCData = (SM_VehicleControl*)SensorData->pData;
+
+	flag = false;
 	return 1;
 }
 int VehicleControl::getData()
