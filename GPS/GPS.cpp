@@ -68,23 +68,29 @@ int GPS::setupSharedMemory()
 }
 int GPS::getData() 
 {
-	DataGPS DataGPS;
-
 	ReadData = gcnew array<unsigned char>(2500);
 	Data = gcnew array<unsigned char>(2500);
 	std::cout << "Start header trapping" << std::endl;
 
 	unsigned int Header = 0;
-	int i = 0;
+	int element = 0;
 	int Start; //Start of data
 	do	{
-		Data[i] = ReadData[i++];
-		Header = ((Header << 8) | Data[i]);
+		Data[element] = ReadData[element++];
+		Header = ((Header << 8) | Data[element]);
 		std::cout << "Finish header trapping" << std::endl;
 	} 
 	while (Header != 0xaa44121c);
-	Start = i - 4;
+	Start = element - 4;
 
+	DataGPS DataGPS;
+
+	unsigned char Buffer[sizeof(SM_GPS)];
+	int Checksum;
+	unsigned int CalculatedCRC;
+	double Northing;
+	double Easting;
+	double Height;
 
 	std::cout << "read data" << std::endl;
 	// Read the incoming data
@@ -103,37 +109,29 @@ int GPS::getData()
 			Buffer[i] = ReadData[i];
 		}
 
+		CalculatedCRC = CalculateBlockCRC32(108, Buffer);
 
+		printf("Calc CRC %X\n", CalculatedCRC);
+		Console::WriteLine(ReadData);
+		printf("Check sum is %X\n", DataGPS.Checksum);
+
+		if (CalculatedCRC == DataGPS.Checksum)
+		{
+			Height = DataGPS.Height;
+			Northing = DataGPS.Northing;
+			Easting = DataGPS.Easting;
+			printf("Height: %f\nNorthing: %f\nEasting: %f.\n", Height, Northing, Easting);
+		}
+		else
+		{
+			Console::WriteLine("Checksum error in GPS data.");
+		}
 	}
 	return 1;
 }
 int GPS::checkData() 
 {
-	DataGPS DataGPS;
-
-	unsigned char Buffer[sizeof(SM_GPS)];
-	int Checksum;
-	unsigned int CalculatedCRC;
-	double Northing;
-	double Easting;
-	double Height;
-
-	int Checksum;
-	unsigned int CalculatedCRC;
-
-	CalculatedCRC = CalculateBlockCRC32(108, Buffer);
-
-	printf("Calc CRC %X\n", CalculatedCRC);
-	Console::WriteLine(ReadData);
-	printf("Check sum is %X\n", Checksum);
-
-	if (CalculatedCRC == Checksum)
-	{
-		/*Height = DataGPS->height;
-		Northing = DataGPS->northing;
-		Easting = DataGPS->easting;*/
-		printf("Height: %f\nNorthing: %f\nEasting: %f.\n", DataGPS.Height, DataGPS.Northing, DataGPS.Easting);
-	}
+	// YOUR CODE HERE
 	return 1;
 }
 int GPS::sendDataToSharedMemory() 
