@@ -69,7 +69,7 @@ int GPS::setupSharedMemory()
 int GPS::getData() 
 {
 	ReadData = gcnew array<unsigned char>(112);
-	/*Data = gcnew array<unsigned char>(2500);*/
+	array<unsigned char>^ Data = gcnew array<unsigned char>(2500);
 
 	DataGPS DataGPS;
 
@@ -82,9 +82,9 @@ int GPS::getData()
 	std::cout << "read data" << std::endl;
 	// Read the incoming data
 	if (Stream->DataAvailable) {
-		Stream->Read(ReadData, 0, ReadData->Length);
+		Stream->Read(Data, 0, sizeof(DataGPS));
 
-		std::cout << "convert to ASCII" << std::endl;
+		std::cout << std::hex << *(unsigned int*)(&Data) << std::endl;
 		// Convert incoming data from an array of unsigned char bytes to an ASCII string
 		ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
 
@@ -120,7 +120,7 @@ int GPS::getData()
 		Console::WriteLine(ReadData);
 		printf("Checksum is %X\n", DataGPS.Checksum);
 
-		if (true)
+		if (CalculatedCRC == DataGPS.Checksum)
 		{
 			GPSData->height = DataGPS.Height;
 			GPSData->northing = DataGPS.Northing;
