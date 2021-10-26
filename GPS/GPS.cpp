@@ -68,6 +68,8 @@ int GPS::setupSharedMemory()
 }
 int GPS::getData() 
 {
+	DataGPS DataGPS;
+
 	ReadData = gcnew array<unsigned char>(2500);
 	Data = gcnew array<unsigned char>(2500);
 	std::cout << "Start header trapping" << std::endl;
@@ -83,14 +85,6 @@ int GPS::getData()
 	while (Header != 0xaa44121c);
 	Start = i - 4;
 
-	DataGPS DataGPS;
-
-	unsigned char Buffer[sizeof(SM_GPS)];
-	int Checksum;
-	unsigned int CalculatedCRC;
-	double Northing;
-	double Easting;
-	double Height;
 
 	std::cout << "read data" << std::endl;
 	// Read the incoming data
@@ -109,25 +103,37 @@ int GPS::getData()
 			Buffer[i] = ReadData[i];
 		}
 
-		CalculatedCRC = CalculateBlockCRC32(108, Buffer);
 
-		printf("Calc CRC %X\n", CalculatedCRC);
-		Console::WriteLine(ReadData);
-		printf("Check sum is %X\n", Checksum);
-
-		if (CalculatedCRC == Checksum)
-		{
-			Height = GPSData->height;
-			Northing = GPSData->northing;
-			Easting = GPSData->easting;
-			printf("Height: %f\nNorthing: %f\nEasting: %f.\n", Height, Northing, Easting);
-		}
 	}
 	return 1;
 }
 int GPS::checkData() 
 {
-	// YOUR CODE HERE
+	DataGPS DataGPS;
+
+	unsigned char Buffer[sizeof(SM_GPS)];
+	int Checksum;
+	unsigned int CalculatedCRC;
+	double Northing;
+	double Easting;
+	double Height;
+
+	int Checksum;
+	unsigned int CalculatedCRC;
+
+	CalculatedCRC = CalculateBlockCRC32(108, Buffer);
+
+	printf("Calc CRC %X\n", CalculatedCRC);
+	Console::WriteLine(ReadData);
+	printf("Check sum is %X\n", Checksum);
+
+	if (CalculatedCRC == Checksum)
+	{
+		/*Height = DataGPS->height;
+		Northing = DataGPS->northing;
+		Easting = DataGPS->easting;*/
+		printf("Height: %f\nNorthing: %f\nEasting: %f.\n", DataGPS.Height, DataGPS.Northing, DataGPS.Easting);
+	}
 	return 1;
 }
 int GPS::sendDataToSharedMemory() 
@@ -151,7 +157,8 @@ int GPS::setHeartbeat(bool heartbeat)
 }
 GPS::~GPS()
 {
-	// YOUR CODE HERE
+	Stream->Close();
+	Client->Close();
 }
 
 

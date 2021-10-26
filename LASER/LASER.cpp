@@ -146,7 +146,6 @@ LASER::~LASER()
 {
 	Stream->Close();
 	Client->Close();
-	// YOUR CODE HERE
 }
 
 

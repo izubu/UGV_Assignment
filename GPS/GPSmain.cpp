@@ -35,7 +35,7 @@ int main()
     {
 		if (!gpsdata->checkHeartbeat())
 		{
-			std::cout << "LASER Heartbeat is " << static_cast<unsigned>(gpsdata->checkHeartbeat()) << std::endl;
+			std::cout << "GPS Heartbeat is " << static_cast<unsigned>(gpsdata->checkHeartbeat()) << std::endl;
 			gpsdata->setHeartbeat(true);
 			wait_count = 0;
 		}
@@ -50,7 +50,10 @@ int main()
 			}
 		}
         std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
-        Thread::Sleep(100);
+
+		gpsdata->getData();
+
+        Thread::Sleep(25);
     }
 
     return 0;
