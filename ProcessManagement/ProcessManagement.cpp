@@ -26,7 +26,7 @@ void StartProcess(int i);
 //defining start up sequence
 TCHAR Units[10][20] = //
 {
-	TEXT("GPS.exe"),
+	TEXT("GPS4.exe"),
 	TEXT("Camera.exe"),
 	TEXT("Display.exe"),
 	TEXT("VehicleControl.exe"),

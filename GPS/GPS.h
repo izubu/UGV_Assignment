@@ -27,6 +27,6 @@ protected:
 	SM_GPS* GPSData;
 	String^ ResponseData;
 	array<unsigned char>^ SendData;
-	array<unsigned char>^ ReadData;
-	array<unsigned char>^ Data;
+	//array<unsigned char>^ ReadData;
+	//unsigned char^ Data;
 };
