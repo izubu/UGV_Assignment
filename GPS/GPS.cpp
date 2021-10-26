@@ -112,7 +112,9 @@ int GPS::getData()
 		CalculatedCRC = CalculateBlockCRC32(108, Buffer);
 
 		printf("Calc CRC %X\n", CalculatedCRC);
+		std::cout << typeid(CalculatedCRC).name() << std::endl;
 		printf("Checksum is %X\n", Data_GPS.Checksum);
+		std::cout << typeid(Data_GPS.Checksum).name() << std::endl;
 
 		if (CalculatedCRC == Data_GPS.Checksum)
 		{

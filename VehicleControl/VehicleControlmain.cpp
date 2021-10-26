@@ -36,7 +36,7 @@ int main()
     {
         if (!VCdata->checkHeartbeat())
         {
-            std::cout << "GPS Heartbeat is " << static_cast<unsigned>(VCdata->checkHeartbeat()) << std::endl;
+            std::cout << "Vehicle Control Heartbeat is " << static_cast<unsigned>(VCdata->checkHeartbeat()) << std::endl;
             VCdata->setHeartbeat(true);
             wait_count = 0;
         }
@@ -52,7 +52,7 @@ int main()
         }
         std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
 
-        VCdata->getData();
+        VCdata->sendDataToSharedMemory();
 
         Thread::Sleep(25);
     }
