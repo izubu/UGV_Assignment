@@ -79,16 +79,16 @@ int VehicleControl::sendDataToSharedMemory()
 	// String command to ask for Channel 1 analogue voltage from the PLC
 	// These command are available on Galil RIO47122 command reference manual
 	// available online
-	String^ AskScan = gcnew String("# Steering: " + VCData->Steering + "Speed: " + VCData->Speed + "Flag: " + flag + " #");
+	String^ AskScan = gcnew String("# Steering: " + VCData->Steering + "  Speed: " + VCData->Speed + "  Flag: " + flag + " #");
 	// String to store received data for display
 
 	SendData = System::Text::Encoding::ASCII->GetBytes(AskScan);
 	flag = !flag;
-
 	// Write command asking for data
 	Stream->WriteByte(0x02);
 	Stream->Write(SendData, 0, SendData->Length);
 	Stream->WriteByte(0x03);
+	Console::WriteLine(AskScan);
 	// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
 	System::Threading::Thread::Sleep(10);
 	return 1;

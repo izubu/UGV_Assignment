@@ -79,7 +79,7 @@ int GPS::getData()
 	double Easting;
 	double Height;
 
-	std::cout << "read data" << std::endl;
+	/*std::cout << "read data" << std::endl;*/
 	// Read the incoming data
 	if (Stream->DataAvailable) {
 		Stream->Read(ReadData, 0, ReadData->Length);
@@ -95,26 +95,21 @@ int GPS::getData()
 		do {
 			Data = ReadData[element++];
 			Header = ((Header << 8) | Data);
-			Console::WriteLine(element);
-			Console::WriteLine(ReadData[element]);
 		} while (Header != 0xaa44121c);
-		Console::WriteLine(Header);
 		Start = element - 4;
 		std::cout << "Finish header trapping" << std::endl;
 
 		unsigned char* BytePtr = (unsigned char*)&Data_GPS;
-		for (int i = Start; i < Start + sizeof(SM_GPS); i++)
+		for (int i = 0; i < sizeof(Data_GPS); i++)
 		{
-			*(BytePtr + i) = ReadData[i];
+			*(BytePtr++) = ReadData[i];
 			Buffer[i] = ReadData[i];
 		}
 
 		CalculatedCRC = CalculateBlockCRC32(108, Buffer);
 
 		printf("Calc CRC %X\n", CalculatedCRC);
-		std::cout << typeid(CalculatedCRC).name() << std::endl;
-		printf("Checksum is %X\n", Data_GPS.Checksum);
-		std::cout << typeid(Data_GPS.Checksum).name() << std::endl;
+		/*printf("Checksum is %X\n", Data_GPS.Checksum);*/
 
 		if (CalculatedCRC == Data_GPS.Checksum)
 		{

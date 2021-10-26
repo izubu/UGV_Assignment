@@ -35,7 +35,7 @@ int main()
     {
 		if (!gpsdata->checkHeartbeat())
 		{
-			std::cout << "GPS Heartbeat is " << static_cast<unsigned>(gpsdata->checkHeartbeat()) << std::endl;
+			//std::cout << "GPS Heartbeat is " << static_cast<unsigned>(gpsdata->checkHeartbeat()) << std::endl;
 			gpsdata->setHeartbeat(true);
 			wait_count = 0;
 		}
@@ -49,7 +49,7 @@ int main()
 				return 1;
 			}
 		}
-        std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
+        //std::cout << "Wait Count is " << static_cast<unsigned>(wait_count) << std::endl;
 
 		gpsdata->getData();
 
