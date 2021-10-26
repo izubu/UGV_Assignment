@@ -1,5 +1,6 @@
 
 #include "GPS.h"
+using namespace System::Threading;
 
 #pragma pack(1)
 struct DataGPS//112 bytes
@@ -67,10 +68,10 @@ int GPS::setupSharedMemory()
 }
 int GPS::getData() 
 {
-	ReadData = gcnew array<unsigned char>(112);
+	ReadData = gcnew array<unsigned char>(128);
 	array<unsigned char>^ Data = gcnew array<unsigned char>(2500);
 
-	DataGPS DataGPS;
+	DataGPS Data_GPS;
 
 	unsigned char Buffer[sizeof(SM_GPS)];
 	unsigned int CalculatedCRC;
@@ -81,26 +82,8 @@ int GPS::getData()
 	std::cout << "read data" << std::endl;
 	// Read the incoming data
 	if (Stream->DataAvailable) {
-		
-		/*array<unsigned char> ^ Data = gcnew array<unsigned char>(2500);
-		Stream->Read(Data, 0, sizeof(DataGPS));
+		Stream->Read(ReadData, 0, ReadData->Length);
 
-		std::cout << std::hex << *(unsigned int*)(&Data) << std::endl;
-
-		unsigned char* BytePtr = (unsigned char*)&DataG;
-		int j = 0;
-		for (int i = 0; i < sizeof(DataGPS); i++)
-		{
-			std::cout << "Buffering" << std::endl;
-			*(BytePtr++) = ReadData[i];
-			Buffer[i] = ReadData[i];
-			Console::Write("{0:X}", Data[i]);
-		}*/
-		
-		Stream->Read(Data, 0, sizeof(DataGPS));
-
-		std::cout << std::hex << *(unsigned int*)(&Data) << std::endl;
-		// Convert incoming data from an array of unsigned char bytes to an ASCII string
 		ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
 
 		std::cout << "Start header trapping" << std::endl;
@@ -119,33 +102,30 @@ int GPS::getData()
 		Start = element - 4;
 		std::cout << "Finish header trapping" << std::endl;
 
-		unsigned char* BytePtr = (unsigned char*)&DataGPS;
-		int j = 0;
+		unsigned char* BytePtr = (unsigned char*)&Data_GPS;
 		for (int i = Start; i < Start + sizeof(SM_GPS); i++)
 		{
-			std::cout << "Buffering" << std::endl;
-			*(BytePtr + Start) = ReadData[i];
-			Buffer[j] = ReadData[i];
-			j++;
+			*(BytePtr + i) = ReadData[i];
+			Buffer[i] = ReadData[i];
 		}
 
 		CalculatedCRC = CalculateBlockCRC32(108, Buffer);
 
 		printf("Calc CRC %X\n", CalculatedCRC);
-		Console::WriteLine(ReadData);
-		printf("Checksum is %X\n", DataGPS.Checksum);
+		printf("Checksum is %X\n", Data_GPS.Checksum);
 
-		if (CalculatedCRC == DataGPS.Checksum)
+		if (CalculatedCRC == Data_GPS.Checksum)
 		{
-			GPSData->height = DataGPS.Height;
-			GPSData->northing = DataGPS.Northing;
-			GPSData->easting = DataGPS.Easting;
-			printf("Height: %f\nNorthing: %f\nEasting: %f.\n", GPSData->height, GPSData->northing, GPSData->easting);
+			GPSData->Height = Data_GPS.Height;
+			GPSData->Northing = Data_GPS.Northing;
+			GPSData->Easting = Data_GPS.Easting;
+			printf("Height: %f\nNorthing: %f\nEasting: %f.\n", GPSData->Height, GPSData->Northing, GPSData->Easting);
 		}
 		else
 		{
 			Console::WriteLine("Checksum error in GPS data.");
 		}
+		Thread::Sleep(25);
 	}
 	return 1;
 }
@@ -156,10 +136,10 @@ int GPS::checkData()
 }
 int GPS::sendDataToSharedMemory() 
 {
-	DataGPS DataGPS;
-	/*GPSData->height = DataGPS.Height;
-	GPSData->northing = DataGPS.Northing;
-	GPSData->easting = DataGPS.Easting;
+	SM_GPS SM_GPS;
+	/*GPSData->height = SM_GPS.Height;
+	GPSData->northing = SM_GPS.Northing;
+	GPSData->easting = SM_GPS.Easting;
 	printf("Height: %f\nNorthing: %f\nEasting: %f.\n", GPSData->height, GPSData->northing, GPSData->easting);*/
 	return 1;
 }

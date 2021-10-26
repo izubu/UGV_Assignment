@@ -29,8 +29,7 @@ int main()
     int PortNumber = 25000;
     String^ ipAddress = gcnew String("192.168.1.200");
 
-    //VCdata->connect(ipAddress, PortNumber);
-    bool flag = false;
+    VCdata->connect(ipAddress, PortNumber);
     std::cout << "Successful with connection" << std::endl;
 
     while (1)
