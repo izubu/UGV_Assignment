@@ -26,6 +26,10 @@
 #include <math.h>
 
 #include <map>
+#include <smstructs.h>
+#include <SMObject.h>
+#include <string>
+using namespace std;
 
 
 extern Vehicle* vehicle;
@@ -126,7 +130,6 @@ void HUD::DrawGauge(double x, double y, double r, double min, double max, double
 	y = sin((startR - margin) * DEGTORAD);
 	glVertex2f((r1 - 15) * x, (r1 - 15) * y);
 
-
 	for (double ang = startR - margin; ang <= endR + margin; ang += (endR - startR + (2 * margin)) * .125 * .5) {
 		double x = cos(ang * DEGTORAD);
 		double y = sin(ang * DEGTORAD);
@@ -138,6 +141,18 @@ void HUD::DrawGauge(double x, double y, double r, double min, double max, double
 	glPopMatrix();
 }
 
+void HUD::DisplayGPS()
+{
+	SMObject* SensorData = new SMObject(TEXT("GPS"), sizeof(SM_GPS));
+	//SM Creation and seeking access
+	SensorData->SMCreate();
+	SensorData->SMAccess();
+	SM_GPS* GPSData = (SM_GPS*)SensorData->pData;
+
+	char buff[15];
+	string GPS_data = "GPS Northing: " + to_string(GPSData->Northing) + ", GPS Easting: " + to_string(GPSData->Easting) + ", GPS Height: " + to_string(GPSData->Height);
+	RenderString(GPS_data.c_str(), 5, 20, GLUT_BITMAP_HELVETICA_18);
+}
 void HUD::Draw()
 {
 	Camera::get()->switchTo2DDrawing();
@@ -150,7 +165,9 @@ void HUD::Draw()
 		DrawGauge(200 + winWidthOff, 280, 210, -1, 1, vehicle->getSpeed(), "Speed");
 		glColor3f(1, 1, 0);
 		DrawGauge(600 + winWidthOff, 280, 210, -40, 40, vehicle->getSteering(), "Steer");
+		DisplayGPS();
 	}
+
 
 	Camera::get()->switchTo3DDrawing();
 }

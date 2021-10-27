@@ -108,22 +108,16 @@ int LASER::checkData()
 		int NumRanges = System::Convert::ToInt32(StringArray[25], 16);
 
 		array<double>^ Range = gcnew array<double>(NumRanges);
-		array<double>^ RangeX = gcnew array<double>(NumRanges);
-		array<double>^ RangeY = gcnew array<double>(NumRanges);
+		/*array<double>^ RangeX = gcnew array<double>(NumRanges);
+		array<double>^ RangeY = gcnew array<double>(NumRanges);*/
 
 		std::cout << "Converts and prints coordinates" << std::endl;
 		for (int i = 0; i < NumRanges; i++)
-		/*{
+		{
 			Range[i] = System::Convert::ToInt32(StringArray[25 + i], 16);
 			LASERData->x[i] = Range[i] * sin(double(i) * Resolution * PI / 180.0);
 			LASERData->y[i] = -Range[i] * cos(double(i) * Resolution * PI / 180.0);
 			std::cout << i + 1 << " (" << LASERData->x[i] << ", " << LASERData->y[i] << ")" << std::endl;
-		}*/
-		{
-			Range[i] = System::Convert::ToInt32(StringArray[25 + i], 16);
-			RangeX[i] = Range[i] * sin(double(i) * Resolution * PI / 180.0);
-			RangeY[i] = -Range[i] * cos(double(i) * Resolution * PI / 180.0);
-			std::cout << i + 1 << " (" << RangeX[i] << ", " << RangeY[i] << ")" << std::endl;
 		}
 	} 
 	else
