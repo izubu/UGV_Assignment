@@ -30,12 +30,11 @@ TCHAR Units[10][20] = //
 	TEXT("Camera.exe"),
 	TEXT("Display01.exe"),
 	TEXT("VehicleControl.exe"),
-	TEXT("LASER.exe")
+	TEXT("LASER01.exe")
 };
 
 int main()
 {
-	//start all 5 modules
 	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 
 	//SM Creation and seeking access
@@ -44,11 +43,17 @@ int main()
 
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
+	SMObject VCObj(TEXT("VehicleControl"), sizeof(SM_VehicleControl));
+	VCObj.SMCreate();
+	VCObj.SMAccess();
+	SM_VehicleControl* VCData = (SM_VehicleControl*)VCObj.pData;
+
 	PMData->Heartbeat.Status = 0b00000000;
 	//std::cout << "STARTED" << std::endl;
 
+	//start all 5 modules
 	StartProcesses();
-	int LIMIT = 20;
+	int LIMIT = 10;
 	
 	array<int>^ wait_count = gcnew array<int>(NUM_UNITS) { 0, 0, 0, 0, 0 };
 	//array<int>^ Critical = gcnew array<int>(NUM_UNITS) { 1, 1, 1, 1, 0 };
@@ -65,7 +70,7 @@ int main()
 			wait_count[0]++;
 			if (wait_count[0] > LIMIT)
 			{
-				std::cout << "Shudown GPS" << std::endl;
+				/*std::cout << "Shudown GPS" << std::endl;*/
 				StartProcess(0);
 				PMData->Heartbeat.Flags.GPS = 0;
 				wait_count[0] = 0;
@@ -201,7 +206,7 @@ void StartProcesses()
 		}
 		else
 		{
-			std::cout << Units[i] << " already running" << std::endl;
+			/*std::cout << Units[i] << " already running" << std::endl;*/
 		}
 	}
 }
@@ -227,6 +232,6 @@ void StartProcess(int i)
 	}
 	else
 	{
-		std::cout << Units[i] << " already running" << std::endl;
+		/*std::cout << Units[i] << " already running" << std::endl;*/
 	}
 }

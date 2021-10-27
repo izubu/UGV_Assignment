@@ -119,7 +119,7 @@ void idle()
 	// Declaration
 	int Shutdown = 0x00;
 
-	int LIMIT = 25;
+	int LIMIT = 10;
 
 	if (PMData->Heartbeat.Flags.Camera == 0)
 	{

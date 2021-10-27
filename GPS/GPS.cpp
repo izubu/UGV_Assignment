@@ -133,11 +133,10 @@ int GPS::checkData()
 }
 int GPS::sendDataToSharedMemory() 
 {
-	SM_GPS SM_GPS;
-	/*GPSData->height = SM_GPS.Height;
-	GPSData->northing = SM_GPS.Northing;
-	GPSData->easting = SM_GPS.Easting;
-	printf("Height: %f\nNorthing: %f\nEasting: %f.\n", GPSData->height, GPSData->northing, GPSData->easting);*/
+	/*SM_GPS SM_GPS;
+	GPSData->Height = SM_GPS.Height;
+	GPSData->Northing = SM_GPS.Northing;
+	GPSData->Easting = SM_GPS.Easting;*/
 	return 1;
 }
 bool GPS::getShutdownFlag()

@@ -246,10 +246,12 @@ void idle() {
 	// do a simulation step
 	if (vehicle != NULL) {
 		vehicle->update(speed, steering, elapsedTime);
+
 		SMObject VCObj(TEXT("VehicleControl"), sizeof(SM_VehicleControl));
 		VCObj.SMCreate();
 		VCObj.SMAccess();
 		SM_VehicleControl* VCData = (SM_VehicleControl*)VCObj.pData;
+
 		VCData->Speed = vehicle->getSpeed();
 		VCData->Steering = vehicle->getSteering();
 	}
@@ -271,7 +273,7 @@ void idle() {
 	// Declaration
 	int Shutdown = 0x00;
 
-	int LIMIT = 25;
+	int LIMIT = 5;
 
 	if (PMData->Heartbeat.Flags.Display == 0)
 	{

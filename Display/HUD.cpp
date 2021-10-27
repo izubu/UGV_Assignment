@@ -26,6 +26,7 @@
 #include <math.h>
 
 #include <map>
+#include "../VehicleControl/VehicleControl.h"
 
 
 extern Vehicle * vehicle;
@@ -146,10 +147,21 @@ void HUD::Draw()
 		winWidthOff = 0;
 
 	if(vehicle) {
+		SMObject VCObj(TEXT("VehicleControl"), sizeof(SM_VehicleControl));
+		VCObj.SMCreate();
+		VCObj.SMAccess();
+		SM_VehicleControl* VCData = (SM_VehicleControl*)VCObj.pData;
+
 		glColor3f(1, 0, 0);
 		DrawGauge(200+winWidthOff, 280, 210, -1, 1, vehicle->getSpeed(), "Speed");
+		char buff[15];
+		sprintf(buff, "%.0f", VCData->Speed);
+		RenderString(buff, 0, 0, GLUT_BITMAP_HELVETICA_18);
 		glColor3f(1, 1, 0);
 		DrawGauge(600+winWidthOff, 280, 210, -40, 40, vehicle->getSteering(), "Steer");
+		char buff[15];
+		sprintf(buff, "%.0f", VCData->Steering);
+		RenderString(buff, 0, 0, GLUT_BITMAP_HELVETICA_18);
 	}
 
 	Camera::get()->switchTo3DDrawing();
