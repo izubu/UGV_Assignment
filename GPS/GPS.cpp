@@ -146,12 +146,12 @@ bool GPS::getShutdownFlag()
 }
 int GPS::checkHeartbeat()
 {
-	return PMData->Heartbeat.Flags.Laser;
+	return PMData->Heartbeat.Flags.GPS;
 }
 int GPS::setHeartbeat(bool heartbeat)
 {
-	PMData->Heartbeat.Flags.Laser = 1;
-	return PMData->Heartbeat.Flags.Laser;
+	PMData->Heartbeat.Flags.GPS = 1;
+	return PMData->Heartbeat.Flags.GPS;
 }
 GPS::~GPS()
 {

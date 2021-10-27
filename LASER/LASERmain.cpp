@@ -27,7 +27,7 @@ int main()
 	int Shutdown = 0x00;
 
 	int wait_count = 0;
-	int LIMIT = 25;
+	int LIMIT = 2;
 	
 	int PortNumber = 23000;
 	String^ ipAddress = gcnew String("192.168.1.200");
